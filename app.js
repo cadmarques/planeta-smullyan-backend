@@ -11,6 +11,8 @@ const puzzleRoutes = require('./routes/puzzleRoutes');  // Rotas dos puzzles
 const puzzleDetailsRoutes = require('./routes/puzzleDetailsRoutes'); // Rotas de PuzzleDetails
 const testRoutes = require('./routes/testRoutes'); // teste de imagens
 const imageRoutes = require('./routes/imageRoutes');  // Rotas das imagens
+const authRoutes = require('./routes/auth'); // Rota de registo de utilizador
+
 
 // Para servir arquivos estáticos
 const path = require('path');
@@ -24,7 +26,9 @@ const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors({
-  origin: 'http://127.0.0.1:8080', // Substituir pela URL do frontend, se necessário
+  origin: 'http://127.0.0.1:3000', // Substituir pela URL do frontend, se necessário
+  origin: 'http://localhost:3000', // Substituir pela URL do frontend, se necessário
+  origin: 'https://cadmarques.github.io',
 }));
 app.use(express.json()); // Permite que o servidor interprete JSON
 
@@ -51,6 +55,7 @@ app.use('/api/puzzles', puzzleRoutes); // Rotas dos puzzles
 app.use('/api/puzzle-details', puzzleDetailsRoutes); // Rotas dos detalhes dos puzzles
 app.use('/api/test', testRoutes); // Usa as rotas de teste de imagens
 app.use('/api/images', imageRoutes);
+app.use('/api', authRoutes);  // Usa as rotas de autenticação com prefixo /api
 
 // Rota de teste para verificar logs
 app.get('/test', (req, res) => {
@@ -60,5 +65,5 @@ app.get('/test', (req, res) => {
 
 // Iniciar o servidor
 app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+  console.log(`Server running on port:${PORT}`);
 });

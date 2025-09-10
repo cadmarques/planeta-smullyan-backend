@@ -106,21 +106,29 @@ router.delete('/:puzzleId', async (req, res) => {
   try {
     const { puzzleId } = req.params;
 
-    // Verificar se o puzzle existe
+    // Log para depuração
+    console.log('Puzzle ID recebido:', puzzleId);
+
+    // Buscar o puzzle pelo ID
     const puzzle = await Puzzle.findById(puzzleId);
     if (!puzzle) {
-      return res.status(404).json({ message: 'Puzzle not found.' });
+      return res.status(404).json({ message: 'Puzzle não encontrado.' });
     }
 
-    // Excluir os detalhes do puzzle
-    const result = await PuzzleDetails.deleteOne({ puzzle: puzzleId });
-    if (result.deletedCount === 0) {
-      return res.status(404).json({ message: 'Puzzle details not found.' });
-    }
+    // Log para confirmar que o puzzle foi encontrado
+    console.log('Puzzle encontrado:', puzzle);
 
-    res.json({ message: 'Puzzle details deleted successfully!' });
+    // Excluir os detalhes do puzzle usando o _id do puzzle (já é um ObjectId)
+    const result = await PuzzleDetails.deleteOne({ puzzle: puzzle._id });
+
+    // Log para depuração
+    console.log('Resultado da exclusão:', result);
+
+    // Retornar mensagem de sucesso, independentemente de quantos detalhes foram excluídos
+    res.json({ message: 'Detalhes do puzzle removidos com sucesso!' });
   } catch (err) {
-    res.status(500).json({ message: err.message });
+    console.error('Erro ao excluir detalhes do puzzle:', err);
+    res.status(500).json({ message: 'Erro ao excluir detalhes do puzzle.' });
   }
 });
 

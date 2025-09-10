@@ -94,18 +94,19 @@ router.get('/:id', async (req, res) => {
 
 // Rota para criar uma nova ilha
 router.post('/', async (req, res) => {
-  const { name, description, boundaries } = req.body;
+  const { name, description, banner, boundaries } = req.body;
 
-  if (!name || !description || !boundaries || boundaries.length < 3) {
+  if (!name || !description || !banner || !boundaries || boundaries.length < 3) {
     return res.status(400).json({
       message:
-        'Nome, descrição e limites (com pelo menos 3 pontos) são obrigatórios.',
+        'Nome, descrição, banner e limites (com pelo menos 3 pontos) são obrigatórios.',
     });
   }
 
   const newIsland = new Island({
     name,
     description,
+    banner,
     boundaries,
   });
 

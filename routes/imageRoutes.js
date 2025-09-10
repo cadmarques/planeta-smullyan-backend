@@ -79,4 +79,37 @@ router.delete('/:id', async (req, res) => {
     }
 });
 
+// Rota para listar imagens com filtro de pesquisa
+router.get('/search', async (req, res) => {
+  try {
+    const { query } = req.query; // Parâmetro de pesquisa
+
+    let images;
+
+    if (!query) {
+      // Modalidade 1: Sem parâmetros -> Retorna as 10 imagens mais recentes
+      images = await Image.find()
+        .sort({ createdAt: -1 }) // Ordena por data de criação (mais recentes primeiro)
+        .limit(10); // Limite de 10 imagens
+    } else if (query.length >= 3) {
+      // Modalidade 2: Pesquisa por texto (mínimo 3 caracteres)
+      images = await Image.find({
+        $or: [
+          { name: { $regex: query, $options: 'i' } }, // Pesquisa insensível a maiúsculas/minúsculas
+          { description: { $regex: query, $options: 'i' } },
+        ],
+      })
+        .sort({ createdAt: -1 }); // Ordena por data de criação
+      // NÃO aplicamos limite aqui, permitindo que todas as imagens correspondentes sejam retornadas
+    } else {
+      // Se o texto de pesquisa tiver menos de 3 caracteres, retorna erro
+      return res.status(400).json({ message: 'A pesquisa deve conter pelo menos 3 caracteres.' });
+    }
+
+    res.status(200).json(images);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;

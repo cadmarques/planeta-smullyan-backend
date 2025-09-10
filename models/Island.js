@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const islandSchema = new mongoose.Schema({
   name: { type: String, required: true }, // Nome da ilha
   description: { type: String, required: true }, // Descrição da ilha
-  banner: { type: String, required: false }, // URL da imagem do banner
+  banner: { type: String, required: true }, // ID da imagem do banner
   icon: { type: String, required: false }, // URL do ícone da ilha
   boundaries: [
     {
